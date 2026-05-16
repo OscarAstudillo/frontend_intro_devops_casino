@@ -1,19 +1,17 @@
-name: CI/CD Pipeline Casino
+name: CI/CD Pipeline Casino Frontend
 
-# El pipeline solo se dispara al hacer push a la rama 'deploy'
 on:
   push:
     branches:
       - deploy
 
 env:
-  ECR_REPOSITORY: casino-frontend # Cambiar a casino-backend en el otro repositorio
+  ECR_REPOSITORY: casino-frontend
 
 jobs:
   build-and-push:
     name: Construir y subir imagen a Amazon ECR
     runs-on: ubuntu-latest
-
     steps:
       - name: 1. Checkout del código
         uses: actions/checkout@v4
@@ -34,13 +32,28 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-        # La pauta pide 3 tags: v1.0.0 (ejemplo semver), latest y el SHA del commit
         run: |
-          echo "Construyendo la imagen Docker..."
-          docker build \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:v1.0.0 .
-          
-          echo "Subiendo las imágenes a ECR..."
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:v1.0.0 .
           docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+
+  deploy:
+    name: Desplegar en EC2 Frontend
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar vía SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_HOST_IP_FRONTEND }}
+          username: ec2-user
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 590183930707.dkr.ecr.us-east-1.amazonaws.com
+            docker pull 590183930707.dkr.ecr.us-east-1.amazonaws.com/casino-frontend:latest
+            docker rm -f casino_frontend || true
+            docker run -d \
+              --name casino_frontend \
+              -p 80:8080 \
+              -e BACKEND_HOST=${{ secrets.AWS_BACKEND_PRIVATE_IP }} \
+              --restart unless-stopped \
+              590183930707.dkr.ecr.us-east-1.amazonaws.com/casino-frontend:latest
