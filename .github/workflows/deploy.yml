@@ -1,0 +1,46 @@
+name: CI/CD Pipeline Casino
+
+# El pipeline solo se dispara al hacer push a la rama 'deploy'
+on:
+  push:
+    branches:
+      - deploy
+
+env:
+  ECR_REPOSITORY: casino-frontend # Cambiar a casino-backend en el otro repositorio
+
+jobs:
+  build-and-push:
+    name: Construir y subir imagen a Amazon ECR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout del código
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar credenciales de AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 3. Iniciar sesión en Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: 4. Construir, etiquetar y publicar la imagen
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        # La pauta pide 3 tags: v1.0.0 (ejemplo semver), latest y el SHA del commit
+        run: |
+          echo "Construyendo la imagen Docker..."
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:v1.0.0 .
+          
+          echo "Subiendo las imágenes a ECR..."
+          docker push -a $ECR_REGISTRY/$ECR_REPOSITORY

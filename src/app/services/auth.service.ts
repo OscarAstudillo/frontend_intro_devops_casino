@@ -1,3 +1,28 @@
+/**
+ * auth.service.ts — Servicio de autenticación con Angular Signals
+ *
+ * Gestiona el estado de sesión: usuario autenticado, token JWT y saldo.
+ *
+ * SIGNALS (Angular 17):
+ *   signal()    → crea un valor reactivo mutable (_usuario, _token).
+ *   computed()  → valor derivado que se recalcula cuando cambia su dependencia.
+ *   asReadonly()→ expone el signal sin permitir mutación desde fuera.
+ *
+ *   Los componentes pueden leer los signals directamente en el template:
+ *     {{ auth.usuario()?.username }}   (la llamada () lee el valor actual)
+ *
+ * PERSISTENCIA:
+ *   La sesión se guarda en localStorage para sobrevivir recargas de página.
+ *   Al iniciar la app, el servicio restaura la sesión del storage.
+ *   Riesgo: localStorage es accesible por JS de la misma origin —
+ *   en producción real se usaría httpOnly cookie; aquí es suficiente para el lab.
+ *
+ * FLUJO DE LOGIN:
+ *   1. login() hace POST /api/auth/login
+ *   2. El backend devuelve { usuario, token }
+ *   3. persistir() guarda ambos en signals y en localStorage
+ *   4. authInterceptor lee auth.token() y adjunta el JWT
+ */
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
@@ -10,12 +35,14 @@ const STORAGE_KEY = 'casino.session';
 export class AuthService {
   private readonly api = environment.apiBaseUrl;
 
+  // Signals privados (mutables solo dentro del servicio)
   private readonly _usuario = signal<Usuario | null>(this.cargarSesion()?.usuario ?? null);
-  private readonly _token = signal<string | null>(this.cargarSesion()?.token ?? null);
+  private readonly _token   = signal<string | null>(this.cargarSesion()?.token   ?? null);
 
-  readonly usuario = this._usuario.asReadonly();
-  readonly token = this._token.asReadonly();
-  readonly autenticado = computed(() => !!this._token());
+  // Signals públicos de solo lectura que consumen los componentes
+  readonly usuario     = this._usuario.asReadonly();
+  readonly token       = this._token.asReadonly();
+  readonly autenticado = computed(() => !!this._token()); // true si hay JWT
 
   constructor(private http: HttpClient) {}
 
@@ -35,6 +62,7 @@ export class AuthService {
     localStorage.removeItem(STORAGE_KEY);
   }
 
+  // Llamado por CasinoService cada vez que el backend retorna el nuevo saldo
   setSaldo(saldo: number) {
     const u = this._usuario();
     if (u) this._usuario.set({ ...u, saldo });
