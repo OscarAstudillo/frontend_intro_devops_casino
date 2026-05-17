@@ -57,7 +57,7 @@ import { spawnVictoryParticles } from '../../utils/particles';
 
         <div *ngIf="estado.terminada" class="resultado-banner">
           <p [ngSwitch]="estado.resultado">
-            <span *ngSwitchCase="'gana'"      class="gano">Ganaste Papito! +$ {{ estado.retorno - estado.apuesta | number:'1.0-0' }}</span>
+            <span *ngSwitchCase="'gana'"      class="gano">Ganaste +$ {{ estado.retorno - estado.apuesta | number:'1.0-0' }}</span>
             <span *ngSwitchCase="'blackjack'" class="gano">Blackjack! +$ {{ estado.retorno - estado.apuesta | number:'1.0-0' }}</span>
             <span *ngSwitchCase="'pierde'"    class="perdio">Pierdes –$ {{ estado.apuesta | number:'1.0-0' }}</span>
             <span *ngSwitchCase="'empate'"    class="empate">Empate</span>
