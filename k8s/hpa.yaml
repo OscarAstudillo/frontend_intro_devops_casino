@@ -15,4 +15,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50 # Si la CPU pasa del 50%, K8s crea otro contenedor
+          averageUtilization: 50 # Si la CPU pasa del 50%, K8s crea otro contenedor en aws

@@ -12,7 +12,7 @@ spec:
       labels:
         app: frontend-intro-devops-casino
     spec:
-      # Regla para forzar el reparto de pods entre nodos (requisito del lab 3.3)
+      # Regla para forzar el reparto de pods entre nodos
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
