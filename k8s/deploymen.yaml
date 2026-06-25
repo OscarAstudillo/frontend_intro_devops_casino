@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-intro-devops-casino
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-intro-devops-casino
+  template:
+    metadata:
+      labels:
+        app: frontend-intro-devops-casino
+    spec:
+      # Regla para forzar el reparto de pods entre nodos (requisito del lab 3.3)
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: frontend-intro-devops-casino
+      containers:
+      - name: frontend-intro-devops-casino
+        # Los marcadores <ACCOUNT_ID> y <REGION> serán reemplazados automáticamente por GitHub Actions
+        image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/frontend-intro-devops-casino:latest
+        ports:
+        - containerPort: 8080
+
+        resources:
+          requests:
+            cpu: "50m" # Obligatorio para que el HPA pueda calcular el % de uso
+          limits:
+            cpu: "250m"
+      
+      # Sondas de salud adaptadas para Nginx (Frontend)
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 10
