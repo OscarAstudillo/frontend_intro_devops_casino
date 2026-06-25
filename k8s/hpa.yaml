@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: frontend-intro-devops-casino # Debe coincidir con el nombre de tu deployment
+    name: frontend-intro-devops-casino
   minReplicas: 2
   maxReplicas: 6
   metrics:
