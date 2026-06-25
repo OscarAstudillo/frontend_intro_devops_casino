@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: frontend_intro_devops_casino
+  name: frontend-intro-devops-casino
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: frontend_intro_devops_casino # Debe coincidir con el nombre de tu deployment
+    name: frontend-intro-devops-casino # Debe coincidir con el nombre de tu deployment
   minReplicas: 2
   maxReplicas: 6
   metrics:

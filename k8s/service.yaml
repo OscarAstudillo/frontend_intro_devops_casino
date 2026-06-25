@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend_intro_devops_casino-lb
+  name: frontend-intro-devops-casino-lb
 spec:
   type: LoadBalancer # Crea el balanceador público en AWS en tus 2 subredes públicas
   selector:
-    app: frontend_intro_devops_casino
+    app: frontend-intro-devops-casino
   ports:
   - port: 80
     targetPort: 8080 # Enruta el tráfico del puerto 80 web al 8080 de tu Nginx
