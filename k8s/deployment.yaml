@@ -22,7 +22,7 @@ spec:
               app: frontend-intro-devops-casino
       containers:
       - name: frontend-intro-devops-casino
-        # Los marcadores <ACCOUNT_ID> y <REGION> serán reemplazados automáticamente por GitHub Actions
+        # Los marcadores <ACCOUNT_ID> y <REGION> serán reemplazados automáticamente por GitHub Actionsss
         image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/frontend-intro-devops-casino:latest
         ports:
         - containerPort: 8080

@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: us-east-1
   CLUSTER_NAME: vidalcasino-eks 
-  ECR_REPOSITORY: frontend-intro-devops-casino # 
+  ECR_REPOSITORY: frontend-intro-devops-casino 
 
 jobs:
   build-push-deploy:
