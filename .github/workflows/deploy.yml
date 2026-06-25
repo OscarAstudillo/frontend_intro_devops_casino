@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: us-east-1
   CLUSTER_NAME: vidalcasino-eks # El nombre de tu clúster EKS
-  ECR_REPOSITORY: frontend_intro_devops_casino # <--- AQUÍ ESTÁ EL CAMBIO CLAVE
+  ECR_REPOSITORY: frontend-intro-devops-casino # <--- AQUÍ ESTÁ EL CAMBIO CLAVE
 
 jobs:
   build-push-deploy:

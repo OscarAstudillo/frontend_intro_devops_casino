@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend_intro_devops_casino
+  name: frontend-intro-devops-casino
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: frontend_intro_devops_casino
+      app: frontend-intro-devops-casino
   template:
     metadata:
       labels:
-        app: frontend_intro_devops_casino
+        app: frontend-intro-devops-casino
     spec:
       # Regla para forzar el reparto de pods entre nodos (requisito del lab 3.3)
       topologySpreadConstraints:
@@ -19,11 +19,11 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
-              app: frontend_intro_devops_casino
+              app: frontend-intro-devops-casino
       containers:
-      - name: frontend_intro_devops_casino
+      - name: frontend-intro-devops-casino
         # Los marcadores <ACCOUNT_ID> y <REGION> serán reemplazados automáticamente por GitHub Actions
-        image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/frontend_intro_devops_casino:latest
+        image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/frontend-intro-devops-casino:latest
         ports:
         - containerPort: 8080
 
