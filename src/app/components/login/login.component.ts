@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   template: `
     <section class="caja tarjeta" #card>
       <p class="eyebrow">Acceso</p>
-      <h2 class="titulo-juego">Bienvenido al Casino Del King Vidal</h2>
+      <h2 class="titulo-juego">Bienvenido al Casino</h2>
       <p class="hint">Demo: <code>demo</code> / <code>demo1234</code></p>
 
       <form (submit)="ingresar(); $event.preventDefault()">
