@@ -3,12 +3,12 @@ name: CI/CD Pipeline Casino Frontend a EKS
 on:
   push:
     branches:
-      - deploy 
+      - deploy
 
 env:
   AWS_REGION: us-east-1
-  CLUSTER_NAME: vidalcasino-eks 
-  ECR_REPOSITORY: frontend-intro-devops-casino 
+  CLUSTER_NAME: vidalcasino-eks #nombre del cluster EKS
+  ECR_REPOSITORY: frontend-intro-devops-casino
 
 jobs:
   build-push-deploy:
