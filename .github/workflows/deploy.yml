@@ -64,3 +64,4 @@ jobs:
           # Aplicar los manifiestos en el clúster[cite: 2, 6]
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/hpa.yaml
