@@ -13,7 +13,7 @@ server {
 
     # 1. Microservicio de Bonos (Python/FastAPI)
     location /api/bonos/ {
-        proxy_pass http://bonos-service:8004/;
+        proxy_pass http://bonos-service:8004;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -23,7 +23,7 @@ server {
 
     # 2. Microservicio de Apuestas (Python/FastAPI)
     location /api/apuestas/ {
-        proxy_pass http://apuestas-service:8005/;
+        proxy_pass http://apuestas-service:8005;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -33,7 +33,7 @@ server {
 
     # 3. Microservicio de Estadísticas (Python/FastAPI)
     location /api/estadisticas/ {
-        proxy_pass http://estadisticas-service:8006/;
+        proxy_pass http://estadisticas-service:8006;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
