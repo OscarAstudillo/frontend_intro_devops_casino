@@ -11,9 +11,33 @@ env:
   ECR_REPOSITORY: frontend-intro-devops-casino
 
 jobs:
+  # ===========================================================
+  # ETAPA 1 — PRUEBAS (obligatoria). Si falla, NO se despliega.
+  # ===========================================================
+  test:
+    name: Pruebas unitarias
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout del código
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 3. Instalar dependencias y correr pruebas
+        run: |
+          npm ci
+          npm test -- --watch=false --browsers=ChromeHeadless
+
+  # ===========================================================
+  # ETAPA 2 — BUILD + PUSH + DEPLOY. Solo si 'test' fue exitoso.
+  # ===========================================================
   build-push-deploy:
     name: Construir, Subir a ECR y Desplegar en EKS
     runs-on: ubuntu-latest
+    needs: test # <-- COMPUERTA: si 'test' falla, este job no corre
     steps:
       - name: 1. Checkout del código
         uses: actions/checkout@v4
